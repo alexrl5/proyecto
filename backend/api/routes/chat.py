@@ -1,13 +1,13 @@
-"""Endpoint principal de conversación."""
+"""Endpoint principal del chat."""
 
 import uuid
 
 from fastapi import APIRouter
 
-from schemas import ChatRequest, ChatResponse
-from services.agents import process_chat
+from ...schemas import ChatRequest, ChatResponse
+from ...services.agent import process_chat
 
-router = APIRouter(prefix="/api", tags=["chat"])
+router = APIRouter(tags=["chat"])
 
 
 @router.post("/chat", response_model=ChatResponse)

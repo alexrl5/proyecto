@@ -3,393 +3,408 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Profesor de Electronica Digital - Chat + Juegos</title>
+  <title>Profesor Digital · Chat + Juegos</title>
   <style>
-    :root{--bg:#f7f8fc;--ink:#0f172a;--muted:#64748b;--card:#ffffff;--border:#e2e8f0;--brand:#2563eb;--brand-2:#1d4ed8;--ok:#16a34a;--bad:#dc2626;--ring:#93c5fd;--radius:14px;--shadow:0 8px 24px rgba(2,6,23,.08)}*{box-sizing:border-box}
-    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif;background:linear-gradient(#f8fafc,#eef2ff);color:var(--ink)}
-    .wrap{max-width:1100px;margin:auto;padding:20px}
-    .grid{display:grid;gap:16px}
-    @media(min-width:980px){.grid{grid-template-columns:360px 1fr}}
-    .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow)}
-    .header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;gap:12px}
-    .title{font-weight:700;font-size:20px}
-    .sub{color:var(--muted);font-size:13px}
-    .row-inline{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-    .badge{font-size:12px;border:1px solid var(--border);padding:4px 8px;border-radius:999px;background:#fff}
-
-    /* Chat */
-    .chat{display:flex;flex-direction:column;height:72vh}
-    .chatlog{flex:1;overflow:auto;padding:12px}
-    .msg{display:flex;gap:10px;margin-bottom:10px}
-    .bubble{max-width:85%;padding:10px 12px;border:1px solid var(--border);border-radius:12px}
-    .me{justify-content:flex-end}.me .bubble{background:#eef2ff}
-    .assistant .bubble{background:#fff}
-    .sys{justify-content:center}.sys .bubble{background:#f1f5f9;color:var(--muted)}
-    .composer{display:flex;gap:8px;padding:10px;border-top:1px solid var(--border)}
-    input[type="text"], select{width:100%;padding:10px 12px;border-radius:12px;border:1px solid var(--border);background:#fff}
-    button{cursor:pointer;padding:10px 14px;border-radius:12px;border:1px solid var(--border);background:#fff}
-    .btn-primary{background:var(--brand);color:#fff;border-color:var(--brand)}
-    .btn-primary:hover{background:var(--brand-2)}
-    .chips{display:flex;gap:6px;flex-wrap:wrap;padding:8px;border-top:1px dashed var(--border)}
-    .chip{font-size:12px;padding:6px 8px;border:1px solid var(--border);border-radius:999px;background:#fff;cursor:pointer}
-
-    /* Juegos */
-    .panel{padding:14px}
-    .row{display:flex;align-items:center;justify-content:space-between;margin:8px 0}
-    .muted{color:var(--muted);font-size:13px}
-    .note{font-size:14px;color:#0b3b0b;background:#ecfdf5;border:1px solid #bbf7d0;padding:10px 12px;border-radius:12px;margin-bottom:10px}
-    .quiz-q{padding:12px;border:1px solid var(--border);border-radius:12px;margin-bottom:10px;background:#fff}
-    .choice{display:block;text-align:left;padding:10px;border:1px solid var(--border);border-radius:10px;margin:6px 0;background:#fff}
-    .choice.sel{outline:2px solid var(--ring)}
-    .choice.ok{background:#f0fdf4;border-color:#22c55e}
-    .choice.bad{background:#fef2f2;border-color:#ef4444}
-    .truth{overflow-x:auto}
-    table{border-collapse:collapse;width:100%;background:#fff;border-radius:12px;overflow:hidden}
-    th,td{border:1px solid var(--border);padding:10px;text-align:left}
-    thead tr{background:#f1f5f9}
+    :root{
+      --bg:#0f172a;
+      --bg-alt:#111827;
+      --panel:#1f2937;
+      --panel-alt:#111d32;
+      --ink:#f1f5f9;
+      --muted:#94a3b8;
+      --primary:#38bdf8;
+      --primary-strong:#0ea5e9;
+      --success:#4ade80;
+      --danger:#f87171;
+    }
+    *{box-sizing:border-box;font-family:'Inter',system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+    body{margin:0;background:radial-gradient(circle at 20% 20%,rgba(56,189,248,.15),transparent 40%),radial-gradient(circle at 80% 0,rgba(248,113,113,.2),transparent 35%),var(--bg);color:var(--ink);min-height:100vh;padding:24px}
+    .layout{max-width:1200px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+    .header{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start;justify-content:space-between}
+    .header h1{margin:0;font-size:30px}
+    .header p{margin:6px 0 0;color:var(--muted)}
+    .toolbar{display:flex;flex-wrap:wrap;gap:10px}
+    .toolbar button{flex:1 1 140px}
+    .grid{display:grid;gap:20px}
+    @media(min-width:980px){.grid{grid-template-columns:1fr 360px}}
+    .card{background:var(--panel);border-radius:20px;padding:24px;box-shadow:0 24px 40px rgba(15,23,42,.35);display:flex;flex-direction:column;min-height:0}
+    button{cursor:pointer;border:none;border-radius:12px;padding:10px 16px;font-size:14px;font-weight:600;transition:all .2s ease}
+    .btn{background:var(--primary);color:#031425}
+    .btn:hover{background:var(--primary-strong);color:#fff}
+    .btn-outline{background:transparent;border:1px solid rgba(148,163,184,.3);color:var(--muted)}
+    .btn-outline:hover{color:var(--ink);border-color:var(--ink)}
+    .chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
+    .chip{padding:8px 12px;border-radius:999px;background:rgba(148,163,184,.14);font-size:13px;cursor:pointer}
+    .chip:hover{background:rgba(56,189,248,.18);color:var(--ink)}
+    .chatlog{flex:1;overflow-y:auto;padding-right:4px;margin-bottom:16px;max-height:55vh}
+    .msg{margin-bottom:14px;display:flex;flex-direction:column}
+    .msg strong{font-size:13px;color:var(--muted);margin-bottom:4px}
+    .bubble{padding:12px 16px;background:var(--panel-alt);border-radius:16px;border:1px solid rgba(148,163,184,.2);font-size:15px;line-height:1.45}
+    .msg.me .bubble{background:rgba(56,189,248,.15);border-color:rgba(56,189,248,.3)}
+    .msg.game .bubble{background:rgba(74,222,128,.1);border-color:rgba(74,222,128,.4)}
+    .composer{display:flex;gap:12px}
+    .composer input{flex:1;padding:12px 16px;border-radius:14px;border:none;background:var(--panel-alt);color:var(--ink);font-size:15px}
+    .badge{padding:4px 10px;border-radius:10px;background:rgba(56,189,248,.15);color:var(--primary);font-size:12px}
+    .status-mini{display:flex;flex-direction:column;gap:10px;margin-bottom:16px;font-size:14px;color:var(--muted)}
+    .status-mini span{display:flex;align-items:center;gap:6px}
+    .note{background:rgba(56,189,248,.08);border-radius:14px;padding:12px;margin-bottom:12px}
+    .quiz{display:flex;flex-direction:column;gap:12px}
+    .question{border:1px solid rgba(148,163,184,.25);border-radius:14px;padding:12px}
+    .question h4{margin:0 0 8px;font-size:15px}
+    .choice{display:block;width:100%;text-align:left;margin:6px 0;padding:10px 12px;border-radius:10px;border:1px solid rgba(148,163,184,.3);background:transparent;color:var(--ink);font-size:14px}
+    .choice.sel{border-color:var(--primary);background:rgba(56,189,248,.12)}
+    .choice.ok{border-color:var(--success);background:rgba(74,222,128,.18)}
+    .choice.bad{border-color:var(--danger);background:rgba(248,113,113,.15)}
+    table{width:100%;border-collapse:collapse;font-size:14px}
+    th,td{border:1px solid rgba(148,163,184,.25);padding:10px;text-align:center}
+    th{background:rgba(148,163,184,.18)}
+    .timer{font-weight:700}
   </style>
 </head>
 <body>
-  <div class="wrap">
+  <div class="layout">
     <div class="header">
       <div>
-        <div class="title">Profesor de Electronica Digital - Chat + Juegos</div>
-        <div class="sub">Traces nativos de OpenAI: el servidor recuerda por <code>trace</code>.</div>
+        <h1>Profesor Digital</h1>
+        <p>Practica teoria, quizzes o tablas de verdad. El backend mantiene memoria por <code>trace</code>.</p>
       </div>
-      <div class="row-inline">
-        <span class="badge">TRACE: <span id="trace-badge">---</span></span>
-        <button id="new-chat" title="Nuevo trace (nueva conversacion)">Nuevo chat</button>
-        <button id="reset-thread" title="Reiniciar conversacion (limpia el trace local)">Reset hilo</button>
-        <a class="sub" href="#spec">Contrato GameSpec</a>
+      <div class="toolbar">
+        <button id="reset-trace" class="btn-outline">Reset hilo</button>
+        <button id="open-docs" class="btn">Abrir Swagger</button>
       </div>
     </div>
 
     <div class="grid">
-      <!-- Chat -->
-      <div class="card chat">
-        <div class="chatlog" id="chatlog"></div>
+      <div class="card">
         <div class="chips">
-          <div class="chip" data-q="Crea un quiz de Karnaugh nivel facil con 3 preguntas.">Quiz de Karnaugh</div>
-          <div class="chip" data-q="Ponme una tabla de verdad para XOR y XNOR.">Tabla XOR/XNOR</div>
-          <div class="chip" data-q="Explicame que es un sumador completo en 3 lineas.">Explicacion</div>
+          <div class="chip" data-text="Quiero un quiz de mapas de Karnaugh nivel facil.">Quiz Karnaugh</div>
+          <div class="chip" data-text="Necesito una tabla de verdad de XOR y XNOR paso a paso.">Tabla XOR/XNOR</div>
+          <div class="chip" data-text="Explicame que es un flip-flop JK en tres frases.">Explicacion breve</div>
         </div>
+        <div class="chatlog" id="chatlog"></div>
         <div class="composer">
-          <input id="chat-input" type="text" placeholder="Escribe aqui (p. ej. 'Quiero practicar flip-flops JK')" />
-          <button id="send" class="btn-primary">Enviar</button>
+          <input id="chat-input" placeholder="Escribe tu pregunta..." />
+          <button id="send" class="btn">Enviar</button>
         </div>
       </div>
 
-      <!-- Juegos -->
       <div class="card">
-        <div class="panel">
-          <div class="row">
-            <div class="muted" id="game-title">No hay juego activo.</div>
-            <div class="muted"><span>Tiempo: </span><span id="timer">---</span></div>
+        <div class="status-mini">
+          <span>Trace: <strong id="trace-label">---</strong></span>
+          <span>Modo: <span class="badge" id="mode-badge">...</span></span>
+          <span>Store: <span class="badge" id="store-path">...</span></span>
+        </div>
+        <div class="game-panel" id="game-panel">
+          <h3>Juego activo</h3>
+          <div id="game-empty" style="color:var(--muted)">Envia una peticion de practica y aqui aparecera el juego.</div>
+          <div id="game-host"></div>
+          <div style="margin-top:10px;font-size:14px;color:var(--muted)">
+            Tiempo: <span class="timer" id="timer">---</span> · Puntuacion: <span id="score">---</span>
           </div>
-          <div id="game"></div>
-          <div class="row" style="margin-top:8px">
-            <div class="muted" id="type">Tipo: ---</div>
-            <div class="muted" id="score">Puntuacion: ---</div>
-          </div>
-
-          <details id="spec" style="margin-top:12px">
-            <summary><strong>Contrato GameSpec</strong></summary>
-            <pre style="white-space:pre-wrap">
-{
-  type: "quiz" | "truth_table",
-  title: string,
-  topic: string,
-  difficulty: "easy"|"medium"|"hard",
-  professor_note: string,
-  payload:
-    // quiz
-    { questions: Array<{ id:string, prompt:string, choices:string[], correctIndex:number, explanation:string }> }
-    // truth_table
-    | { headers:["A","B","F"], rows:Array<{A:0|1,B:0|1}>, solution:Array<{A:0|1,B:0|1,F:0|1}> }
-}
-            </pre>
-          </details>
         </div>
       </div>
     </div>
   </div>
 
   <script>
-    // =================== Config ===================
     const params = new URLSearchParams(location.search);
-    const API_URL = params.get('api') || 'http://localhost:3000/api/chat';
+    const API_BASE = params.get('api') || 'http://localhost:8000/api';
+    const endpoints = {
+      chat: `${API_BASE}/chat`,
+      reset: `${API_BASE}/reset`,
+      health: `${API_BASE}/health`
+    };
+    const TRACE_KEY = 'prof-digital-trace';
 
-    // =================== Estado (solo TRACE) ===================
-    const TRACE_KEY = 'profedigi_trace';
-    function getTrace(){ return localStorage.getItem(TRACE_KEY) || null; }
-    function setTrace(t){ if(t){ localStorage.setItem(TRACE_KEY, t); } }
-    function clearTrace(){ localStorage.removeItem(TRACE_KEY); }
+    const $ = (sel) => document.querySelector(sel);
+    const chatlog = $('#chatlog');
+    let typingRow = null;
+    let timerId = null;
+    let seconds = 0;
 
-    // =================== Utilidades UI ===================
-    function $(id){ return document.getElementById(id); }
-    const chatlog = $('chatlog');
-
-    function paintBadge(){
-      const t = getTrace();
-      $('trace-badge').textContent = t ? (t.slice(0,8)+'...') : '---';
+    function getTrace(){ return localStorage.getItem(TRACE_KEY); }
+    function setTrace(v){ localStorage.setItem(TRACE_KEY, v); updateTraceLabel(); }
+    function clearTrace(){ localStorage.removeItem(TRACE_KEY); updateTraceLabel(); }
+    function updateTraceLabel(){
+      const trace = getTrace();
+      $('#trace-label').textContent = trace ? `${trace.slice(0,8)}…` : '---';
     }
-    paintBadge();
 
-    function addMsg(role, text){
+    function addMessage(role, text){
       const row = document.createElement('div');
-      row.className = 'msg ' + (role==='user'?'me':role==='assistant'?'assistant':'sys');
-      const b = document.createElement('div');
-      b.className = 'bubble';
-      b.textContent = text;
-      row.appendChild(b);
+      row.className = `msg ${role === 'user' ? 'me' : role === 'game' ? 'game' : ''}`;
+      const author = document.createElement('strong');
+      author.textContent = role === 'user' ? 'Tu' : role === 'game' ? 'Profesor · Juego' : 'Profesor';
+      const bubble = document.createElement('div');
+      bubble.className = 'bubble';
+      bubble.textContent = text;
+      row.appendChild(author);
+      row.appendChild(bubble);
       chatlog.appendChild(row);
       chatlog.scrollTop = chatlog.scrollHeight;
     }
 
-    // typing
-    let typingEl=null;
     function showTyping(){
-      if(typingEl) return;
-      typingEl=document.createElement('div');
-      typingEl.className='msg sys';
-      const b=document.createElement('div');
-      b.className='bubble';
-      b.textContent='Escribiendo...';
-      typingEl.appendChild(b);
-      chatlog.appendChild(typingEl);
-      chatlog.scrollTop=chatlog.scrollHeight;
+      if(typingRow) return;
+      typingRow = document.createElement('div');
+      typingRow.className='msg';
+      typingRow.innerHTML='<strong>Profesor</strong><div class="bubble">Escribiendo...</div>';
+      chatlog.appendChild(typingRow);
+      chatlog.scrollTop = chatlog.scrollHeight;
     }
-    function hideTyping(){ if(typingEl){ typingEl.remove(); typingEl=null; } }
-
-    // =================== Juegos ===================
-    const GAME_TYPES = { QUIZ:'quiz', TRUTH:'truth_table' };
-
-    function resetGame(){
-      const host=$('game');
-      host.innerHTML='';
-      $('type').textContent='Tipo: ---';
-      $('score').textContent='Puntuacion: ---';
-      $('game-title').textContent='No hay juego activo.';
-      stopTimer();
+    function hideTyping(){
+      if(typingRow){
+        typingRow.remove();
+        typingRow = null;
+      }
     }
 
-    function render(spec){
-      const host=$('game');
-      if(!spec){ return resetGame(); }
-      $('type').textContent='Tipo: '+spec.type;
-      $('game-title').innerHTML = `<strong>${spec.title}</strong> - ${spec.topic} (${spec.difficulty})`;
+    function resetGamePanel(){
+      $('#game-host').innerHTML='';
+      $('#game-empty').style.display='block';
+      $('#score').textContent='---';
+      $('#timer').textContent='---';
+      if(timerId){ clearInterval(timerId); timerId=null; }
+    }
+
+    function startTimer(){
+      if(timerId){ clearInterval(timerId); }
+      seconds = 0;
+      $('#timer').textContent='0s';
+      timerId = setInterval(()=>{
+        seconds++;
+        $('#timer').textContent = `${seconds}s`;
+      },1000);
+    }
+
+    function renderGame(spec){
+      if(!spec){ resetGamePanel(); return; }
+      $('#game-empty').style.display='none';
+      const host = $('#game-host');
       host.innerHTML='';
-      const note=document.createElement('div');
+      const title = document.createElement('div');
+      title.innerHTML = `<strong>${spec.title}</strong> · ${spec.topic} (${spec.difficulty})`;
+      host.appendChild(title);
+      const note = document.createElement('div');
       note.className='note';
-      note.textContent='Nota del profesor: '+spec.professor_note;
+      note.textContent = `Nota del profesor: ${spec.professor_note}`;
       host.appendChild(note);
-      if(spec.type===GAME_TYPES.QUIZ) return renderQuiz(host,spec);
-      if(spec.type===GAME_TYPES.TRUTH) return renderTruth(host,spec);
-      host.textContent='Tipo de juego no soportado.';
+      if(spec.type === 'quiz'){ renderQuiz(host, spec); }
+      else if(spec.type === 'truth_table'){ renderTruth(host, spec); }
     }
 
     function renderQuiz(host, spec){
-      let answers={}, submitted=false;
-      const total=spec.payload.questions.length;
+      const wrap = document.createElement('div');
+      wrap.className='quiz';
+      const answers = {};
+      let submitted=false;
       spec.payload.questions.forEach((q,idx)=>{
-        const box=document.createElement('div');
-        box.className='quiz-q';
-        const head=document.createElement('div');
-        head.innerHTML=`<div class="muted" style="margin-bottom:6px">Q${idx+1}</div><div style="font-weight:600">${q.prompt}</div>`;
-        box.appendChild(head);
-        q.choices.forEach((c,i)=>{
+        const block=document.createElement('div');
+        block.className='question';
+        block.innerHTML=`<h4>Q${idx+1}. ${q.prompt}</h4>`;
+        q.choices.forEach((choice,i)=>{
           const btn=document.createElement('button');
           btn.className='choice';
-          btn.textContent=c;
-          btn.type='button';
+          btn.textContent=choice;
           btn.addEventListener('click',()=>{
             if(submitted) return;
             answers[q.id]=i;
-            [...box.querySelectorAll('.choice')].forEach(el=>el.classList.remove('sel'));
+            block.querySelectorAll('.choice').forEach(el=>el.classList.remove('sel'));
             btn.classList.add('sel');
           });
-          box.appendChild(btn);
+          block.appendChild(btn);
         });
         const exp=document.createElement('div');
-        exp.className='muted';
-        exp.dataset.exp='1';
-        exp.style.marginTop='6px';
+        exp.style.marginTop='8px';
         exp.style.display='none';
-        exp.textContent='Explicacion: '+q.explanation;
-        box.appendChild(exp);
-        host.appendChild(box);
+        exp.style.color='var(--muted)';
+        exp.textContent=`Explicacion: ${q.explanation}`;
+        block.appendChild(exp);
+        wrap.appendChild(block);
       });
-      const actions=document.createElement('div');
-      actions.style.display='flex';
-      actions.style.justifyContent='flex-end';
-      actions.style.gap='8px';
-      actions.style.marginTop='10px';
-      const submit=document.createElement('button');
-      submit.className='btn-primary';
-      submit.textContent='Enviar';
-      submit.addEventListener('click',()=>{
+      const action=document.createElement('button');
+      action.className='btn';
+      action.style.marginTop='10px';
+      action.textContent='Corregir';
+      action.addEventListener('click',()=>{
         if(submitted) return;
         submitted=true;
         let ok=0;
-        [...host.querySelectorAll('.quiz-q')].forEach((box,qi)=>{
-          const q=spec.payload.questions[qi];
-          const opts=[...box.querySelectorAll('.choice')];
-          opts.forEach((btn,i)=>{
-            const selected=(answers[q.id]===i);
-            const correct=(i===q.correctIndex);
+        wrap.querySelectorAll('.question').forEach((block,idx)=>{
+          const q=spec.payload.questions[idx];
+          block.querySelectorAll('.choice').forEach((btn,i)=>{
             btn.classList.remove('sel');
-            if(correct) btn.classList.add('ok');
-            if(selected && !correct) btn.classList.add('bad');
+            if(i===q.correctIndex) btn.classList.add('ok');
+            if(answers[q.id]===i && i!==q.correctIndex) btn.classList.add('bad');
           });
           if(answers[q.id]===q.correctIndex) ok++;
-          const exp=box.querySelector('[data-exp="1"]');
-          if(exp) exp.style.display='block';
+          block.lastChild.style.display='block';
         });
-        $('score').textContent=`Puntuacion: ${ok}/${total}`;
-        stopTimer();
+        $('#score').textContent=`${ok}/${spec.payload.questions.length}`;
+        if(timerId){ clearInterval(timerId); timerId=null; }
       });
-      actions.appendChild(submit);
-      host.appendChild(actions);
+      host.appendChild(wrap);
+      host.appendChild(action);
+      startTimer();
     }
 
     function renderTruth(host,spec){
-      let submitted=false;
-      const total=spec.payload.rows.length;
       const wrap=document.createElement('div');
-      wrap.className='truth';
       const table=document.createElement('table');
       const thead=document.createElement('thead');
-      const trh=document.createElement('tr');
+      const thr=document.createElement('tr');
       spec.payload.headers.forEach(h=>{
         const th=document.createElement('th');
         th.textContent=h;
-        trh.appendChild(th);
+        thr.appendChild(th);
       });
-      thead.appendChild(trh);
+      thead.appendChild(thr);
       const tbody=document.createElement('tbody');
       const entries=spec.payload.rows.map(r=>({A:r.A,B:r.B,F:''}));
-      entries.forEach((r,i)=>{
+      entries.forEach((row,i)=>{
         const tr=document.createElement('tr');
-        const tdA=document.createElement('td'); tdA.textContent=r.A; tr.appendChild(tdA);
-        const tdB=document.createElement('td'); tdB.textContent=r.B; tr.appendChild(tdB);
-        const tdF=document.createElement('td');
+        tr.innerHTML=`<td>${row.A}</td><td>${row.B}</td>`;
+        const td=document.createElement('td');
         const input=document.createElement('input');
-        input.type='text'; input.inputMode='numeric'; input.maxLength=1; input.placeholder='0/1';
-        input.addEventListener('input',(e)=>{ const v=e.target.value.trim(); r.F=(v==='0'||v==='1')?v:''; });
-        input.addEventListener('keydown',(e)=>{ if(e.key==='Enter') check(); });
-        tdF.appendChild(input);
-        tr.appendChild(tdF);
+        input.type='text';
+        input.maxLength=1;
+        input.style.width='50px';
+        input.style.textAlign='center';
+        input.addEventListener('input',e=>{
+          const v=e.target.value.trim();
+          row.F = v === '0' || v === '1' ? v : '';
+        });
+        td.appendChild(input);
+        tr.appendChild(td);
         tbody.appendChild(tr);
       });
       table.appendChild(thead);
       table.appendChild(tbody);
       wrap.appendChild(table);
-      host.appendChild(wrap);
-      const actions=document.createElement('div');
-      actions.style.display='flex';
-      actions.style.justifyContent='flex-end';
-      actions.style.gap='8px';
-      actions.style.marginTop='10px';
-      const btn=document.createElement('button');
-      btn.className='btn-primary';
-      btn.textContent='Comprobar';
-      btn.addEventListener('click',check);
-      actions.appendChild(btn);
-      host.appendChild(actions);
-      function check(){
-        if(submitted) return;
-        submitted=true;
+      const button=document.createElement('button');
+      button.className='btn';
+      button.style.marginTop='10px';
+      button.textContent='Verificar';
+      button.addEventListener('click',()=>{
         let ok=0;
         [...tbody.querySelectorAll('tr')].forEach((tr,i)=>{
           const input=tr.querySelector('input');
           input.disabled=true;
-          const expected=Number(spec.payload.solution[i].F);
-          const got=Number(entries[i].F);
-          tr.style.background=(entries[i].F!==''&&got===expected)?'#f0fdf4':'#fef2f2';
-          if(entries[i].F!==''&&got===expected) ok++;
+          const expected=String(spec.payload.solution[i].F);
+          if(entries[i].F === expected){
+            tr.style.background='rgba(74,222,128,.2)';
+            ok++;
+          }else{
+            tr.style.background='rgba(248,113,113,.2)';
+          }
         });
-        $('score').textContent=`Puntuacion: ${ok}/${total}`;
-        stopTimer();
+        $('#score').textContent=`${ok}/${spec.payload.rows.length}`;
+        if(timerId){ clearInterval(timerId); timerId=null; }
+      });
+      host.appendChild(wrap);
+      host.appendChild(button);
+      startTimer();
+    }
+
+    async function fetchHealth(){
+      try{
+        const res = await fetch(endpoints.health);
+        const data = await res.json();
+        $('#mode-badge').textContent=data.mode || 'unknown';
+        $('#store-path').textContent=data.store_path || 'store.json';
+      }catch(err){
+        $('#mode-badge').textContent='offline';
+        console.error(err);
       }
     }
 
-    // =================== Temporizador ===================
-    let timerId=null, seconds=0;
-    function startTimer(){ stopTimer(); seconds=0; updateTimer(); timerId=setInterval(()=>{seconds++;updateTimer();},1000); }
-    function stopTimer(){ if(timerId){ clearInterval(timerId); timerId=null; } }
-    function updateTimer(){ $('timer').textContent = timerId? seconds+'s':'---'; }
-
-    // =================== Llamadas al backend ===================
-    async function sendToAPI(userText){
+    async function submitMessage(text){
+      if(!text.trim()) return;
+      addMessage('user', text);
+      showTyping();
       try{
-        showTyping();
-        const body = {
-          trace: getTrace(), // null/undefined en el primer envio => el server creara uno
-          messages:[{ role:'user', content:userText }]
+        const payload = {
+          trace: getTrace(),
+          messages:[{role:'user', content:text}]
         };
-        const res = await fetch(API_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
-        const text = await res.text();
-        if(!res.ok){ throw new Error(text || ('HTTP '+res.status)); }
-        const data = JSON.parse(text);
-
-        // Guardar/actualizar trace
-        if (data.trace) { setTrace(data.trace); paintBadge(); }
-
+        const res = await fetch(endpoints.chat, {
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body:JSON.stringify(payload)
+        });
+        if(!res.ok){
+          throw new Error(`HTTP ${res.status}`);
+        }
+        const data = await res.json();
+        if(data.trace){ setTrace(data.trace); }
         if(data.kind === 'assistant'){
-          addMsg('assistant', data.content || '');
-        } else if(data.kind === 'game_spec'){
-          addMsg('assistant', 'Perfecto, te he preparado un juego: ' + (data.spec?.title||''));
-          startTimer();
-          render(data.spec);
-        } else {
-          addMsg('sys', 'Respuesta desconocida del servidor.');
+          addMessage('assistant', data.content || '');
+          resetGamePanel();
+        }else if(data.kind === 'game_spec'){
+          addMessage('game', `Te he preparado un juego: ${data.spec?.title || ''}`);
+          renderGame(data.spec);
         }
       }catch(err){
         console.error(err);
-        addMsg('sys', 'Error: '+(err?.message||err));
+        addMessage('assistant', `Error: ${err.message || err}`);
       }finally{
         hideTyping();
       }
     }
 
-    // =================== UI bindings ===================
-    $('send').addEventListener('click', ()=>{
-      const input=$('chat-input');
-      const text=input.value.trim();
-      if(!text) return;
+    async function resetTrace(){
+      try{
+        const trace = getTrace();
+        clearTrace();
+        resetGamePanel();
+        chatlog.innerHTML='';
+        addMessage('assistant','Hilo reiniciado. Se comenzará una nueva conversación en el próximo mensaje.');
+        if(trace){
+          await fetch(endpoints.reset, {
+            method:'POST',
+            headers:{'Content-Type':'application/json'},
+            body:JSON.stringify({ trace })
+          }).catch(()=>{});
+        }else{
+          await fetch(endpoints.reset, { method:'POST' }).catch(()=>{});
+        }
+      }catch(err){
+        console.error(err);
+      }
+    }
+
+    $('#send').addEventListener('click', ()=>{
+      const input=$('#chat-input');
+      const text=input.value;
       input.value='';
-      addMsg('user', text);
-      sendToAPI(text);
+      submitMessage(text);
     });
-    $('chat-input').addEventListener('keydown', (e)=>{
+    $('#chat-input').addEventListener('keydown', (e)=>{
       if(e.key==='Enter'){
-        e.preventDefault(); $('send').click();
+        e.preventDefault();
+        $('#send').click();
       }
     });
-    document.querySelectorAll('.chip').forEach(c=>
-      c.addEventListener('click', ()=>{
-        const t=c.getAttribute('data-q');
-        addMsg('user', t);
-        sendToAPI(t);
-      })
-    );
-
-    // Nuevo chat => borrar trace local
-    $('new-chat').addEventListener('click', ()=>{
-      clearTrace(); paintBadge();
-      chatlog.innerHTML=''; resetGame();
-      addMsg('assistant','Hola! Soy tu profe de Electronica Digital. Pideme teoria o dime que quieres practicar y te lanzo un juego.');
+    document.querySelectorAll('.chip').forEach(chip=>{
+      chip.addEventListener('click', ()=>{
+        const text=chip.dataset.text || '';
+        $('#chat-input').value='';
+        submitMessage(text);
+      });
+    });
+    $('#reset-trace').addEventListener('click', ()=>{
+      resetTrace();
+      clearTrace();
+      updateTraceLabel();
+    });
+    $('#open-docs').addEventListener('click', ()=>{
+      const base = API_BASE.replace(/\/api$/, '');
+      window.open(`${base}/swagger`, '_blank');
     });
 
-    // Reset hilo => igual que nuevo chat (limpia trace)
-    $('reset-thread').addEventListener('click', ()=>{
-      clearTrace(); paintBadge();
-      resetGame();
-      addMsg('sys','Conversacion reiniciada. Se creara un nuevo trace con el siguiente mensaje.');
-    });
-
-    // =================== Mensaje inicial ===================
-    addMsg('assistant','Hola! Soy tu profe de Electronica Digital. Pideme teoria o dime que quieres practicar y te lanzo un juego.');
+    updateTraceLabel();
+    fetchHealth();
+    addMessage('assistant','Hola! Soy tu profesor digital. Pideme teoria o dime que quieres practicar.');
   </script>
 </body>
 </html>

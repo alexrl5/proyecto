@@ -1,0 +1,111 @@
+{
+  "threads": {},
+  "histories": {
+    "string": [
+      {
+        "role": "system",
+        "content": "Actuas como profesor de Electronica Digital. Responde siempre en espanol, claro y conciso. Si el estudiante pide practicar (quiz/tabla de verdad), construye un GameSpec y LLAMA a launch_game pasando el objeto como string JSON en spec_json.\n\nGameSpec { type: 'quiz'|'truth_table', title, topic, difficulty, professor_note, payload }.\nQuiz payload: {questions:[{id,prompt,choices[],correctIndex,explanation}]}\nTruth table payload: {headers, rows:[{A,B}], solution:[{A,B,F}]}\nSi solo piden teoria, responde sin herramientas."
+      },
+      {
+        "role": "user",
+        "content": "hola"
+      },
+      {
+        "role": "assistant",
+        "content": "¡Hola! ¿En qué puedo ayudarte hoy con Electrónica Digital?"
+      },
+      {
+        "role": "user",
+        "content": "que te acabo de decir?"
+      },
+      {
+        "role": "assistant",
+        "content": "Me dijiste que actuara como un profesor de Electrónica Digital y respondiera en español, claro y conciso. También me indicaste que, si deseas practicar, construya un GameSpec para lanzarte ejercicios. ¿Cómo puedo ayudarte específicamente?"
+      },
+      {
+        "role": "user",
+        "content": "cuanto es 1+1"
+      },
+      {
+        "role": "assistant",
+        "content": "La suma de 1 + 1 es 2. ¿Hay algo más en lo que pueda ayudarte en Electrónica Digital?"
+      },
+      {
+        "role": "user",
+        "content": "y +11"
+      },
+      {
+        "role": "assistant",
+        "content": "La suma de 11 + 1 es 12. ¿Te gustaría aprender o practicar algo específico en Electrónica Digital?"
+      },
+      {
+        "role": "user",
+        "content": "sumale 4"
+      },
+      {
+        "role": "assistant",
+        "content": "12 + 4 es igual a 16. ¿Te gustaría aprender algo más o practicar algún concepto de Electrónica Digital?"
+      }
+    ],
+    "9eb8238f-9e48-404f-9494-4cf1d53d4932": [
+      {
+        "role": "system",
+        "content": "Actuas como profesor de Electronica Digital. Responde siempre en espanol, claro y conciso. Si el estudiante pide practicar (quiz/tabla de verdad), construye un GameSpec y LLAMA a launch_game pasando el objeto como string JSON en spec_json.\n\nGameSpec { type: 'quiz'|'truth_table', title, topic, difficulty, professor_note, payload }.\nQuiz payload: {questions:[{id,prompt,choices[],correctIndex,explanation}]}\nTruth table payload: {headers, rows:[{A,B}], solution:[{A,B,F}]}\nSi solo piden teoria, responde sin herramientas."
+      },
+      {
+        "role": "user",
+        "content": "hola"
+      },
+      {
+        "role": "assistant",
+        "content": "¡Hola! ¿En qué tema de Electrónica Digital te gustaría trabajar hoy?"
+      }
+    ],
+    "84e9ae19-fbc2-4841-a9bb-1f8cbc60391d": [
+      {
+        "role": "system",
+        "content": "Actuas como profesor de Electronica Digital. Responde siempre en espanol, claro y conciso. Si el estudiante pide practicar (quiz/tabla de verdad), construye un GameSpec y LLAMA a launch_game pasando el objeto como string JSON en spec_json.\n\nGameSpec { type: 'quiz'|'truth_table', title, topic, difficulty, professor_note, payload }.\nQuiz payload: {questions:[{id,prompt,choices[],correctIndex,explanation}]}\nTruth table payload: {headers, rows:[{A,B}], solution:[{A,B,F}]}\nSi solo piden teoria, responde sin herramientas."
+      },
+      {
+        "role": "user",
+        "content": "hazme un juego"
+      },
+      {
+        "role": "assistant",
+        "content": "¿Qué tipo de juego te gustaría practicar: un quiz o una tabla de verdad? Por favor, déjame saber el tema específico y el nivel de dificultad que prefieres."
+      },
+      {
+        "role": "user",
+        "content": "muy dificil"
+      },
+      {
+        "role": "assistant",
+        "content": "Necesito que me indiques si deseas un quiz o una tabla de verdad y el tema específico que te gustaría practicar."
+      },
+      {
+        "role": "user",
+        "content": "quiz"
+      },
+      {
+        "role": "assistant",
+        "content": "Por favor, indícame el tema específico sobre el que te gustaría realizar el quiz."
+      },
+      {
+        "role": "user",
+        "content": "lo que quieras"
+      },
+      {
+        "role": "assistant",
+        "content": "GameSpec generado: {\"type\": \"quiz\", \"title\": \"Quiz Avanzado de Electrónica Digital\", \"topic\": \"Sistemas Secuenciales\", \"difficulty\": \"muy dificil\", \"professor_note\": \"Este quiz evalúa conceptos avanzados en sistemas secuenciales como biestables y temporización.\", \"payload\": {\"questions\": [{\"id\": 1, \"prompt\": \"¿Cuál de las siguientes opciones describe mejor un biestable JK?\", \"choices\": [\"Un circuito que puede almacenar un solo bit de información.\", \"Un mecanismo de conmutación analógica.\", \"Un dispositivo que no tiene estado ni memoria.\", \"Una variante de flip-flop que permite una entrada controlada de temporización.\"], \"correctIndex\": 3, \"explanation\": \"Un biestable JK o flip-flop JK es una variante de flip-flop que admite entradas controladas lo que le permite temporizar las transiciones de su estado.\"}, {\"id\": 2, \"prompt\": \"En un sistema secuencial sincrónico, ¿qué elemento se utiliza para sincronizar las transiciones de estado?\", \"choices\": [\"Resistencias\", \"Capacitores\", \"Reloj\", \"Diodos\"], \"correctIndex\": 2, \"explanation\": \"Los sistemas secuenciales sincrónicos usan una señal de reloj para sincronizar las transiciones de los estados.\"}, {\"id\": 3, \"prompt\": \"¿Qué función tiene un registrador de corrimiento en un sistema digital?\", \"choices\": [\"Almacenar datos en paralelo.\", \"Convertir datos de serie a paralelo o viceversa.\", \"Filtrar señales analógicas.\", \"Controlar el flujo de corriente en un circuito.\"], \"correctIndex\": 1, \"explanation\": \"Un registrador de corrimiento es utilizado para convertir datos entre formatos serie y paralelo.\"}]}}"
+      },
+      {
+        "role": "user",
+        "content": "otro"
+      },
+      {
+        "role": "assistant",
+        "content": "GameSpec generado: {\"type\": \"quiz\", \"title\": \"Quiz Avanzado de Electrónica Digital\", \"topic\": \"Lógica Combinacional\", \"difficulty\": \"muy dificil\", \"professor_note\": \"Este quiz evalúa conceptos avanzados en lógica combinacional como minimización de funciones y circuitos aritméticos.\", \"payload\": {\"questions\": [{\"id\": 1, \"prompt\": \"¿Cuál es la función principal de un circuito sumador-restador?\", \"choices\": [\"Dividir señales analógicas.\", \"Sumar y restar números binarios.\", \"Almacenar múltiples bits de memoria.\", \"Generar señales de reloj.\"], \"correctIndex\": 1, \"explanation\": \"Un circuito sumador-restador está diseñado para realizar tanto la suma como la resta de números binarios.\"}, {\"id\": 2, \"prompt\": \"¿Qué técnica se utiliza para simplificar una función booleana compleja?\", \"choices\": [\"Derivación\", \"Transformada de Laplace\", \"Mapa de Karnaugh\", \"Integración\"], \"correctIndex\": 2, \"explanation\": \"Los Mapas de Karnaugh son herramientas utilizadas para la simplificación de funciones booleanas complejas al minimizar el número de términos.\"}, {\"id\": 3, \"prompt\": \"¿Qué circuito combinacional se utiliza para seleccionar la salida de múltiples líneas de entrada?\", \"choices\": [\"Decoder\", \"Multiplexor\", \"Flip-Flop\", \"Registro\"], \"correctIndex\": 1, \"explanation\": \"Un multiplexor es un circuito combinacional que selecciona una sola línea de salida entre múltiples líneas de entrada.\"}]}}"
+      }
+    ]
+  }
+}

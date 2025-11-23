@@ -1,10 +1,10 @@
-"""Punto de entrada FastAPI estructurado por llamadas."""
+"""Punto de entrada FastAPI."""
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from core.settings import get_app_kwargs
-from routes import chat, system
+from .config import get_app_kwargs
+from ..api.routes import chat, system
 
 app = FastAPI(**get_app_kwargs())
 app.add_middleware(
@@ -15,5 +15,5 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(system.router)
-app.include_router(chat.router)
+app.include_router(system.router, prefix="/api")
+app.include_router(chat.router, prefix="/api")

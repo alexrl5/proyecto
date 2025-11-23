@@ -1,4 +1,4 @@
-"""Pydantic schemas compartidas entre las llamadas de la API."""
+"""Esquemas Pydantic compartidos."""
 
 from typing import List, Literal, Optional
 
@@ -11,7 +11,7 @@ class ChatMessage(BaseModel):
 
 
 class ChatRequest(BaseModel):
-    trace: Optional[str] = None  # id de conversacion proporcionado por el front
+    trace: Optional[str] = None
     messages: List[ChatMessage] = Field(default_factory=list)
 
 

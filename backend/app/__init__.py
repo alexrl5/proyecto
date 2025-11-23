@@ -1,0 +1,5 @@
+"""Exposición del objeto FastAPI."""
+
+from .main import app
+
+__all__ = ["app"]

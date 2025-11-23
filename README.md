@@ -1,23 +1,42 @@
-﻿# Profesor Electronica Digital
+# Profesor Digital · Rebuild 2025
 
-Separacion ligera en front/back. El backend expone FastAPI y el frontend es un HTML+JS estatico.
+Aplicación rehecha desde cero para separar claramente backend y frontend. El backend usa FastAPI y un servicio de agentes compatible con tres modos (Threads nativos, `messages` o `input`). El frontend es una SPA estática sin dependencias que consume la API y muestra quizzes/tablas en vivo.
 
 ## Backend
-1. `cd backend`
-2. (Opcional) `python -m venv .venv && .venv\\Scripts\\activate`
-3. `pip install -r requirements.txt`
-4. Define `OPENAI_API_KEY` en `.env` (copiar desde la raiz o crear uno nuevo).
-5. `uvicorn app:app --reload --port 3000` (los routers estan divididos por llamadas en `routes/`)
 
-El front consume `http://localhost:3000/api/chat` por defecto. Cambia el puerto o la URL lanzando el HTML con `?api=http://host:puerto/api/chat`.
+```
+cd backend
+python -m venv .venv
+.venv\Scripts\activate
+pip install -r requirements.txt
+```
+
+1. Crea/actualiza `.env` en la raíz del repo con `OPENAI_API_KEY=...` (y opcional `STORE_PATH`).
+2. Lanza el servidor: `uvicorn backend.app.main:app --reload --port 8000`
+3. Documentación interactiva en `http://localhost:8000/swagger` (usa los assets por defecto de FastAPI) y ReDoc en `/docs`.
+
+Arquitectura:
+
+- `backend/app`: configuración y punto de entrada de FastAPI.
+- `backend/api/routes`: routers de sistema (`/api/health`, `/api/reset`) y chat (`/api/chat`).
+- `backend/services/agent.py`: lógica central del profesor, detección de features del SDK `agents`, tooling `launch_game`.
+- `backend/services/store.py`: persistencia en `store.json` para mapear `trace -> thread_id` e historiales.
+- `backend/schemas.py`: modelos Pydantic para requests/responses.
 
 ## Frontend
-- Abre `frontend/index.html` con Live Server/VSCode o sirve la carpeta: `npx serve frontend` o `python -m http.server 4173 -d frontend`.
-- Una vez cargado, escribe mensajes o usa los chips predefinidos. El `trace` se guarda en `localStorage` (botones "Nuevo chat" y "Reset hilo" lo limpian).
+
+El front es un HTML+JS autónomo (`frontend/index.html`). Puedes abrirlo con Live Server o servirlo rápido:
+
+```
+npx serve frontend
+# o
+python -m http.server 4173 -d frontend
+```
+
+Por defecto llama a `http://localhost:8000/api`; puedes apuntarlo a otra URL usando `?api=https://tu-backend.com/api`. Incluye chips de prompts rápidos, visor del modo del backend y render dinámico de GameSpec.
 
 ## Notas
-- `store.json` se mantiene en la raiz del repo y guarda el mapeo `trace -> thread_id`.
-- Si cambias la ubicacion del backend, ajusta `STORE_PATH` via variable de entorno para evitar colisiones.
-- Si tu SDK `agents` no soporta Threads nativos, el backend cae en modo fallback usando el parametro `messages`; en ese caso `store.json` guarda el historial completo de la conversacion.
-- FastAPI expone Swagger UI en `http://localhost:3000/swagger` (Redoc queda en `/docs`) para que pruebes los endpoints sin levantar el frontend.
-- La logica esta estructurada por llamadas: `routes/system.py` maneja `/health` y `/reset`, `routes/chat.py` maneja `/api/chat`, y la capa de servicio vive en `services/agents.py`.
+
+- `store.json` queda en la raíz (configurable con `STORE_PATH`). Contiene `threads` y `histories`.
+- El backend cambia automáticamente de modo según las capacidades del SDK `agents`: Threads > Messages > Input.
+- Botones “Nuevo trace” y “Reset hilo” desde el frontend limpian `localStorage` y notifican al backend.
