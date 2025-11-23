@@ -1,0 +1,395 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Profesor de Electronica Digital - Chat + Juegos</title>
+  <style>
+    :root{--bg:#f7f8fc;--ink:#0f172a;--muted:#64748b;--card:#ffffff;--border:#e2e8f0;--brand:#2563eb;--brand-2:#1d4ed8;--ok:#16a34a;--bad:#dc2626;--ring:#93c5fd;--radius:14px;--shadow:0 8px 24px rgba(2,6,23,.08)}*{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif;background:linear-gradient(#f8fafc,#eef2ff);color:var(--ink)}
+    .wrap{max-width:1100px;margin:auto;padding:20px}
+    .grid{display:grid;gap:16px}
+    @media(min-width:980px){.grid{grid-template-columns:360px 1fr}}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow)}
+    .header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;gap:12px}
+    .title{font-weight:700;font-size:20px}
+    .sub{color:var(--muted);font-size:13px}
+    .row-inline{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+    .badge{font-size:12px;border:1px solid var(--border);padding:4px 8px;border-radius:999px;background:#fff}
+
+    /* Chat */
+    .chat{display:flex;flex-direction:column;height:72vh}
+    .chatlog{flex:1;overflow:auto;padding:12px}
+    .msg{display:flex;gap:10px;margin-bottom:10px}
+    .bubble{max-width:85%;padding:10px 12px;border:1px solid var(--border);border-radius:12px}
+    .me{justify-content:flex-end}.me .bubble{background:#eef2ff}
+    .assistant .bubble{background:#fff}
+    .sys{justify-content:center}.sys .bubble{background:#f1f5f9;color:var(--muted)}
+    .composer{display:flex;gap:8px;padding:10px;border-top:1px solid var(--border)}
+    input[type="text"], select{width:100%;padding:10px 12px;border-radius:12px;border:1px solid var(--border);background:#fff}
+    button{cursor:pointer;padding:10px 14px;border-radius:12px;border:1px solid var(--border);background:#fff}
+    .btn-primary{background:var(--brand);color:#fff;border-color:var(--brand)}
+    .btn-primary:hover{background:var(--brand-2)}
+    .chips{display:flex;gap:6px;flex-wrap:wrap;padding:8px;border-top:1px dashed var(--border)}
+    .chip{font-size:12px;padding:6px 8px;border:1px solid var(--border);border-radius:999px;background:#fff;cursor:pointer}
+
+    /* Juegos */
+    .panel{padding:14px}
+    .row{display:flex;align-items:center;justify-content:space-between;margin:8px 0}
+    .muted{color:var(--muted);font-size:13px}
+    .note{font-size:14px;color:#0b3b0b;background:#ecfdf5;border:1px solid #bbf7d0;padding:10px 12px;border-radius:12px;margin-bottom:10px}
+    .quiz-q{padding:12px;border:1px solid var(--border);border-radius:12px;margin-bottom:10px;background:#fff}
+    .choice{display:block;text-align:left;padding:10px;border:1px solid var(--border);border-radius:10px;margin:6px 0;background:#fff}
+    .choice.sel{outline:2px solid var(--ring)}
+    .choice.ok{background:#f0fdf4;border-color:#22c55e}
+    .choice.bad{background:#fef2f2;border-color:#ef4444}
+    .truth{overflow-x:auto}
+    table{border-collapse:collapse;width:100%;background:#fff;border-radius:12px;overflow:hidden}
+    th,td{border:1px solid var(--border);padding:10px;text-align:left}
+    thead tr{background:#f1f5f9}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="header">
+      <div>
+        <div class="title">Profesor de Electronica Digital - Chat + Juegos</div>
+        <div class="sub">Traces nativos de OpenAI: el servidor recuerda por <code>trace</code>.</div>
+      </div>
+      <div class="row-inline">
+        <span class="badge">TRACE: <span id="trace-badge">---</span></span>
+        <button id="new-chat" title="Nuevo trace (nueva conversacion)">Nuevo chat</button>
+        <button id="reset-thread" title="Reiniciar conversacion (limpia el trace local)">Reset hilo</button>
+        <a class="sub" href="#spec">Contrato GameSpec</a>
+      </div>
+    </div>
+
+    <div class="grid">
+      <!-- Chat -->
+      <div class="card chat">
+        <div class="chatlog" id="chatlog"></div>
+        <div class="chips">
+          <div class="chip" data-q="Crea un quiz de Karnaugh nivel facil con 3 preguntas.">Quiz de Karnaugh</div>
+          <div class="chip" data-q="Ponme una tabla de verdad para XOR y XNOR.">Tabla XOR/XNOR</div>
+          <div class="chip" data-q="Explicame que es un sumador completo en 3 lineas.">Explicacion</div>
+        </div>
+        <div class="composer">
+          <input id="chat-input" type="text" placeholder="Escribe aqui (p. ej. 'Quiero practicar flip-flops JK')" />
+          <button id="send" class="btn-primary">Enviar</button>
+        </div>
+      </div>
+
+      <!-- Juegos -->
+      <div class="card">
+        <div class="panel">
+          <div class="row">
+            <div class="muted" id="game-title">No hay juego activo.</div>
+            <div class="muted"><span>Tiempo: </span><span id="timer">---</span></div>
+          </div>
+          <div id="game"></div>
+          <div class="row" style="margin-top:8px">
+            <div class="muted" id="type">Tipo: ---</div>
+            <div class="muted" id="score">Puntuacion: ---</div>
+          </div>
+
+          <details id="spec" style="margin-top:12px">
+            <summary><strong>Contrato GameSpec</strong></summary>
+            <pre style="white-space:pre-wrap">
+{
+  type: "quiz" | "truth_table",
+  title: string,
+  topic: string,
+  difficulty: "easy"|"medium"|"hard",
+  professor_note: string,
+  payload:
+    // quiz
+    { questions: Array<{ id:string, prompt:string, choices:string[], correctIndex:number, explanation:string }> }
+    // truth_table
+    | { headers:["A","B","F"], rows:Array<{A:0|1,B:0|1}>, solution:Array<{A:0|1,B:0|1,F:0|1}> }
+}
+            </pre>
+          </details>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // =================== Config ===================
+    const params = new URLSearchParams(location.search);
+    const API_URL = params.get('api') || 'http://localhost:3000/api/chat';
+
+    // =================== Estado (solo TRACE) ===================
+    const TRACE_KEY = 'profedigi_trace';
+    function getTrace(){ return localStorage.getItem(TRACE_KEY) || null; }
+    function setTrace(t){ if(t){ localStorage.setItem(TRACE_KEY, t); } }
+    function clearTrace(){ localStorage.removeItem(TRACE_KEY); }
+
+    // =================== Utilidades UI ===================
+    function $(id){ return document.getElementById(id); }
+    const chatlog = $('chatlog');
+
+    function paintBadge(){
+      const t = getTrace();
+      $('trace-badge').textContent = t ? (t.slice(0,8)+'...') : '---';
+    }
+    paintBadge();
+
+    function addMsg(role, text){
+      const row = document.createElement('div');
+      row.className = 'msg ' + (role==='user'?'me':role==='assistant'?'assistant':'sys');
+      const b = document.createElement('div');
+      b.className = 'bubble';
+      b.textContent = text;
+      row.appendChild(b);
+      chatlog.appendChild(row);
+      chatlog.scrollTop = chatlog.scrollHeight;
+    }
+
+    // typing
+    let typingEl=null;
+    function showTyping(){
+      if(typingEl) return;
+      typingEl=document.createElement('div');
+      typingEl.className='msg sys';
+      const b=document.createElement('div');
+      b.className='bubble';
+      b.textContent='Escribiendo...';
+      typingEl.appendChild(b);
+      chatlog.appendChild(typingEl);
+      chatlog.scrollTop=chatlog.scrollHeight;
+    }
+    function hideTyping(){ if(typingEl){ typingEl.remove(); typingEl=null; } }
+
+    // =================== Juegos ===================
+    const GAME_TYPES = { QUIZ:'quiz', TRUTH:'truth_table' };
+
+    function resetGame(){
+      const host=$('game');
+      host.innerHTML='';
+      $('type').textContent='Tipo: ---';
+      $('score').textContent='Puntuacion: ---';
+      $('game-title').textContent='No hay juego activo.';
+      stopTimer();
+    }
+
+    function render(spec){
+      const host=$('game');
+      if(!spec){ return resetGame(); }
+      $('type').textContent='Tipo: '+spec.type;
+      $('game-title').innerHTML = `<strong>${spec.title}</strong> - ${spec.topic} (${spec.difficulty})`;
+      host.innerHTML='';
+      const note=document.createElement('div');
+      note.className='note';
+      note.textContent='Nota del profesor: '+spec.professor_note;
+      host.appendChild(note);
+      if(spec.type===GAME_TYPES.QUIZ) return renderQuiz(host,spec);
+      if(spec.type===GAME_TYPES.TRUTH) return renderTruth(host,spec);
+      host.textContent='Tipo de juego no soportado.';
+    }
+
+    function renderQuiz(host, spec){
+      let answers={}, submitted=false;
+      const total=spec.payload.questions.length;
+      spec.payload.questions.forEach((q,idx)=>{
+        const box=document.createElement('div');
+        box.className='quiz-q';
+        const head=document.createElement('div');
+        head.innerHTML=`<div class="muted" style="margin-bottom:6px">Q${idx+1}</div><div style="font-weight:600">${q.prompt}</div>`;
+        box.appendChild(head);
+        q.choices.forEach((c,i)=>{
+          const btn=document.createElement('button');
+          btn.className='choice';
+          btn.textContent=c;
+          btn.type='button';
+          btn.addEventListener('click',()=>{
+            if(submitted) return;
+            answers[q.id]=i;
+            [...box.querySelectorAll('.choice')].forEach(el=>el.classList.remove('sel'));
+            btn.classList.add('sel');
+          });
+          box.appendChild(btn);
+        });
+        const exp=document.createElement('div');
+        exp.className='muted';
+        exp.dataset.exp='1';
+        exp.style.marginTop='6px';
+        exp.style.display='none';
+        exp.textContent='Explicacion: '+q.explanation;
+        box.appendChild(exp);
+        host.appendChild(box);
+      });
+      const actions=document.createElement('div');
+      actions.style.display='flex';
+      actions.style.justifyContent='flex-end';
+      actions.style.gap='8px';
+      actions.style.marginTop='10px';
+      const submit=document.createElement('button');
+      submit.className='btn-primary';
+      submit.textContent='Enviar';
+      submit.addEventListener('click',()=>{
+        if(submitted) return;
+        submitted=true;
+        let ok=0;
+        [...host.querySelectorAll('.quiz-q')].forEach((box,qi)=>{
+          const q=spec.payload.questions[qi];
+          const opts=[...box.querySelectorAll('.choice')];
+          opts.forEach((btn,i)=>{
+            const selected=(answers[q.id]===i);
+            const correct=(i===q.correctIndex);
+            btn.classList.remove('sel');
+            if(correct) btn.classList.add('ok');
+            if(selected && !correct) btn.classList.add('bad');
+          });
+          if(answers[q.id]===q.correctIndex) ok++;
+          const exp=box.querySelector('[data-exp="1"]');
+          if(exp) exp.style.display='block';
+        });
+        $('score').textContent=`Puntuacion: ${ok}/${total}`;
+        stopTimer();
+      });
+      actions.appendChild(submit);
+      host.appendChild(actions);
+    }
+
+    function renderTruth(host,spec){
+      let submitted=false;
+      const total=spec.payload.rows.length;
+      const wrap=document.createElement('div');
+      wrap.className='truth';
+      const table=document.createElement('table');
+      const thead=document.createElement('thead');
+      const trh=document.createElement('tr');
+      spec.payload.headers.forEach(h=>{
+        const th=document.createElement('th');
+        th.textContent=h;
+        trh.appendChild(th);
+      });
+      thead.appendChild(trh);
+      const tbody=document.createElement('tbody');
+      const entries=spec.payload.rows.map(r=>({A:r.A,B:r.B,F:''}));
+      entries.forEach((r,i)=>{
+        const tr=document.createElement('tr');
+        const tdA=document.createElement('td'); tdA.textContent=r.A; tr.appendChild(tdA);
+        const tdB=document.createElement('td'); tdB.textContent=r.B; tr.appendChild(tdB);
+        const tdF=document.createElement('td');
+        const input=document.createElement('input');
+        input.type='text'; input.inputMode='numeric'; input.maxLength=1; input.placeholder='0/1';
+        input.addEventListener('input',(e)=>{ const v=e.target.value.trim(); r.F=(v==='0'||v==='1')?v:''; });
+        input.addEventListener('keydown',(e)=>{ if(e.key==='Enter') check(); });
+        tdF.appendChild(input);
+        tr.appendChild(tdF);
+        tbody.appendChild(tr);
+      });
+      table.appendChild(thead);
+      table.appendChild(tbody);
+      wrap.appendChild(table);
+      host.appendChild(wrap);
+      const actions=document.createElement('div');
+      actions.style.display='flex';
+      actions.style.justifyContent='flex-end';
+      actions.style.gap='8px';
+      actions.style.marginTop='10px';
+      const btn=document.createElement('button');
+      btn.className='btn-primary';
+      btn.textContent='Comprobar';
+      btn.addEventListener('click',check);
+      actions.appendChild(btn);
+      host.appendChild(actions);
+      function check(){
+        if(submitted) return;
+        submitted=true;
+        let ok=0;
+        [...tbody.querySelectorAll('tr')].forEach((tr,i)=>{
+          const input=tr.querySelector('input');
+          input.disabled=true;
+          const expected=Number(spec.payload.solution[i].F);
+          const got=Number(entries[i].F);
+          tr.style.background=(entries[i].F!==''&&got===expected)?'#f0fdf4':'#fef2f2';
+          if(entries[i].F!==''&&got===expected) ok++;
+        });
+        $('score').textContent=`Puntuacion: ${ok}/${total}`;
+        stopTimer();
+      }
+    }
+
+    // =================== Temporizador ===================
+    let timerId=null, seconds=0;
+    function startTimer(){ stopTimer(); seconds=0; updateTimer(); timerId=setInterval(()=>{seconds++;updateTimer();},1000); }
+    function stopTimer(){ if(timerId){ clearInterval(timerId); timerId=null; } }
+    function updateTimer(){ $('timer').textContent = timerId? seconds+'s':'---'; }
+
+    // =================== Llamadas al backend ===================
+    async function sendToAPI(userText){
+      try{
+        showTyping();
+        const body = {
+          trace: getTrace(), // null/undefined en el primer envio => el server creara uno
+          messages:[{ role:'user', content:userText }]
+        };
+        const res = await fetch(API_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
+        const text = await res.text();
+        if(!res.ok){ throw new Error(text || ('HTTP '+res.status)); }
+        const data = JSON.parse(text);
+
+        // Guardar/actualizar trace
+        if (data.trace) { setTrace(data.trace); paintBadge(); }
+
+        if(data.kind === 'assistant'){
+          addMsg('assistant', data.content || '');
+        } else if(data.kind === 'game_spec'){
+          addMsg('assistant', 'Perfecto, te he preparado un juego: ' + (data.spec?.title||''));
+          startTimer();
+          render(data.spec);
+        } else {
+          addMsg('sys', 'Respuesta desconocida del servidor.');
+        }
+      }catch(err){
+        console.error(err);
+        addMsg('sys', 'Error: '+(err?.message||err));
+      }finally{
+        hideTyping();
+      }
+    }
+
+    // =================== UI bindings ===================
+    $('send').addEventListener('click', ()=>{
+      const input=$('chat-input');
+      const text=input.value.trim();
+      if(!text) return;
+      input.value='';
+      addMsg('user', text);
+      sendToAPI(text);
+    });
+    $('chat-input').addEventListener('keydown', (e)=>{
+      if(e.key==='Enter'){
+        e.preventDefault(); $('send').click();
+      }
+    });
+    document.querySelectorAll('.chip').forEach(c=>
+      c.addEventListener('click', ()=>{
+        const t=c.getAttribute('data-q');
+        addMsg('user', t);
+        sendToAPI(t);
+      })
+    );
+
+    // Nuevo chat => borrar trace local
+    $('new-chat').addEventListener('click', ()=>{
+      clearTrace(); paintBadge();
+      chatlog.innerHTML=''; resetGame();
+      addMsg('assistant','Hola! Soy tu profe de Electronica Digital. Pideme teoria o dime que quieres practicar y te lanzo un juego.');
+    });
+
+    // Reset hilo => igual que nuevo chat (limpia trace)
+    $('reset-thread').addEventListener('click', ()=>{
+      clearTrace(); paintBadge();
+      resetGame();
+      addMsg('sys','Conversacion reiniciada. Se creara un nuevo trace con el siguiente mensaje.');
+    });
+
+    // =================== Mensaje inicial ===================
+    addMsg('assistant','Hola! Soy tu profe de Electronica Digital. Pideme teoria o dime que quieres practicar y te lanzo un juego.');
+  </script>
+</body>
+</html>
