@@ -9,7 +9,7 @@ from typing import Any, Dict, List, Optional
 from agents import Agent, Runner, function_tool
 
 from ..schemas import ChatMessage, ChatResponse
-from . import store
+from . import knowledge, store
 
 
 @function_tool
@@ -22,6 +22,14 @@ def launch_game(spec_json: str) -> str:
     return json.dumps(spec, ensure_ascii=False)
 
 
+@function_tool
+def lookup_knowledge(question: str) -> str:
+    """Busca fragmentos en los documentos Markdown del backend."""
+    results = knowledge.search_documents(question)
+    payload = {"query": question, "matches": results}
+    return json.dumps(payload, ensure_ascii=False)
+
+
 SYSTEM_PROMPT = (
     "Actuas como profesor de Electronica Digital. "
     "Responde siempre en espanol, claro y conciso. "
@@ -31,13 +39,15 @@ SYSTEM_PROMPT = (
     "payload }.\n"
     "Quiz payload: {questions:[{id,prompt,choices[],correctIndex,explanation}]}\n"
     "Truth table payload: {headers, rows:[{A,B}], solution:[{A,B,F}]}\n"
-    "Si solo piden teoria, responde sin herramientas."
+    "Si necesitas datos concretos del temario oficial, usa lookup_knowledge con una consulta corta; "
+    "resume los fragmentos devueltos citando el archivo. "
+    "Si solo piden teoria y no requieres contexto extra, responde sin herramientas."
 )
 
 prof_agent = Agent(
     name="Profesor Digital",
     instructions=SYSTEM_PROMPT,
-    tools=[launch_game],
+    tools=[launch_game, lookup_knowledge],
 )
 
 # --- Capabilidades del SDK ---
